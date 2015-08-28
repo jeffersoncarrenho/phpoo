@@ -2,7 +2,7 @@
 require_once("baseDAO.class.php");
 require_once("usuarioVO.class.php");
 
-class usuarioDAO{
+class usuarioDAO extends baseDAO{
 
     //métodos
     public function inserir(){
