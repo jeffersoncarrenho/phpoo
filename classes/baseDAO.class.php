@@ -8,7 +8,7 @@ abstract class baseDAO{
     protected $nomebanco          = "phpoobd";
     protected $conexao            = null;
     protected $linhasafetadas     = 0;
-    protected $autocommit         = 1; //controle de transações | autocommit
+    protected $autocommit         = 0; //controle de transações | 1 = autocommit
     
     public function __construct(){
         $this->conecta();    
@@ -89,7 +89,7 @@ abstract class baseDAO{
     }//setLinhasAfetadas
     
     public function getLinhasAfetadas(){
-        return $this-linhasafetadas;
+        return $this->linhasafetadas;
     }//getLinhasAfetadas
     
     public function trataerro($arquivo=null,$rotina=null, $numerro=null, $msgerro=null, $geraexcept = false){
