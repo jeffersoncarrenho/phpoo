@@ -33,39 +33,63 @@ abstract class baseDAO{
     }//conecta
     
     public function start(){
-    
+        mysql_query("START TRANSASCTION");
     }//start
     
     public function commit(){
-    
+        mysql_query("COMMIT");
     }//commit
     
     public function rollback(){
-    
+        mysql_query("ROLLBACK");
     }//rollback
 
-    public function INSERT(){
+    public function INSERT($sql = null){
+        if($sql != null):
+            if($this->autocommit == 0) $this->start();
+            $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
+            $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
+        else:
+            $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);
+        endif;
+        
+    }//INSERT
     
-    }//insert
+    public function UPDATE($sql){
+        if($sql != null):
+            if($this->autocommit == 0) $this->start();
+            $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
+            $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
+        else:
+            $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);
+        endif;
+    }//UPDATE
     
-    public function UPDATE(){
+    public function DELETE($sql){
+        if($sql != null):
+                if($this->autocommit == 0) $this->start();
+                $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
+                $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
+        else:
+            $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);    
+        endif;
+    }//DELETE
     
-    }//update
+    public function SELECT($sql){
+        if($sql != null):
+            $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
+            $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
+        else:
+            $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);    
+        endif;
+    }//SELECT
     
-    public function DELETE(){
-    
-    }//delete
-    
-    public function SELECT(){
-    
-    }//select
-    
-    public function setLinhasAfetadas(){
-    
+    public function setLinhasAfetadas($numlinhas){
+        $this->linhasafetadas = $numlinhas;
     }//setLinhasAfetadas
     
     public function getLinhasAfetadas(){
-    
+        return $this-linhasafetadas;
     }//getLinhasAfetadas
     
     public function trataerro($arquivo=null,$rotina=null, $numerro=null, $msgerro=null, $geraexcept = false){
