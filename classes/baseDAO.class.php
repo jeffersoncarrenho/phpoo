@@ -79,6 +79,7 @@ abstract class baseDAO{
         if($sql != null):
             $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
             $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
+            return $query;
         else:
             $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);    
         endif;

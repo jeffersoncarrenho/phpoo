@@ -66,16 +66,34 @@ class usuarioDAO extends baseDAO{
             endif;
     }//deletar
     
-    public function selecionar(){
-        
+    public function selecionar($id=null, $condicao=null){
+        if($id != null && $condicao == null):
+            $sql = sprintf('SELECT * FROM usuarios WHERE id="%s";', $id);
+        elseif($id == null && $condicao != null):
+            $sql = sprintf('SELECT * FROM usuarios WHERE %s;', $condicao);
+        else:
+            $sql = sprintf('SELECT * FROM usuarios;');
+        endif;
+        $objVO = new usuarioVO();
+        $resultado = array();
+        $query = $this->SELECT($sql);
+        while($rs = mysql_fetch_assoc($query)):
+            $objVO->setidusuario(stripslashes($rs['id']));
+            $objVO->setnome(stripslashes($rs['nome']));
+            $objVO->setemail(stripslashes($rs['email']));
+            $objVO->setlogin(stripslashes($rs['login']));
+            $objVO->setsenha(stripslashes($rs['senha']));
+            $resultado[] = clone $objVO;
+        endwhile;
+            return $resultado;
     }//selecionar
     
     public function getALL(){
-    
+        return $this->selecionar();
     }//getALL
     
-    public function getbYID(){
-    
+    public function getbYID($id){
+        return $this->selecionar($id, null);
     }//getByID
 
 }//usuarioDAO
