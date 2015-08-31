@@ -13,7 +13,7 @@ class usuarioDAO extends baseDAO{
                         addslashes($objVO->getsenha())
         );
             
-        $this->INSERT($sql);
+        $this->executaSQL($sql);
         if($this->getLinhasAfetadas() == 1):
             $objVO->setidusuario(mysql_insert_id($this->conexao));
             $this->commit();
@@ -37,7 +37,7 @@ class usuarioDAO extends baseDAO{
                             addslashes($objVO->getsenha()),
                             addslashes($objVO->getidusuario())
                           );
-            $this->UPDATE($sql);
+            $this->executaSQL($sql);
             if($this->getLinhasAfetadas() == 1):
                 $this->commit();
                 return $objVO;
@@ -55,7 +55,7 @@ class usuarioDAO extends baseDAO{
                 $sql = sprintf('DELETE FROM usuarios where id="%s";',
                                 addslashes($objVO->getidusuario())
                               );
-                $this->UPDATE($sql);
+                $this->executaSQL($sql);
                 if($this->getLinhasAfetadas() == 1):
                     $this->commit();
                     return $objVO;
@@ -76,7 +76,7 @@ class usuarioDAO extends baseDAO{
         endif;
         $objVO = new usuarioVO();
         $resultado = array();
-        $query = $this->SELECT($sql);
+        $query = $this->executaSQL($sql);
         while($rs = mysql_fetch_assoc($query)):
             $objVO->setidusuario(stripslashes($rs['id']));
             $objVO->setnome(stripslashes($rs['nome']));
