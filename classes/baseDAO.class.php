@@ -43,47 +43,30 @@ abstract class baseDAO{
     public function rollback(){
         mysql_query("ROLLBACK");
     }//rollback
-
-    public function INSERT($sql = null){
-        if($sql != null):
-            if($this->autocommit == 0) $this->start();
+    
+    
+    public function executaSQL($sql=NULL){
+        if($sql != NULL):
+            if(substr(trim(strtolower($sql)),0,6)=='select'):
+                $isSelect = TRUE;
+            else:
+                $isSelect = FALSE;
+            endif;
+            if($isSelect == FALSE && $this->autocommit==0):
+                $this->start();
+            endif;
             $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
             $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
+            if($isSelect == TRUE):
+                return $query;
+            else:
+                return $this->getLinhasAfetadas();
+            endif;
         else:
-            $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);
+            $this->trataerro(__FILE__,__FUNCTION__,null, 'Comando SQL nao Informado.',false);
         endif;
-        
-    }//INSERT
+    }
     
-    public function UPDATE($sql){
-        if($sql != null):
-            if($this->autocommit == 0) $this->start();
-            $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
-            $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
-        else:
-            $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);
-        endif;
-    }//UPDATE
-    
-    public function DELETE($sql){
-        if($sql != null):
-                if($this->autocommit == 0) $this->start();
-                $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
-                $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
-        else:
-            $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);    
-        endif;
-    }//DELETE
-    
-    public function SELECT($sql){
-        if($sql != null):
-            $query = mysql_query($sql) or die ($this->trataerro(__FILE__, __FUNCTION__));
-            $this->setLinhasAfetadas(mysql_affected_rows($this->conexao));
-            return $query;
-        else:
-            $this->trataerro(__FILE__, __FUNCTION__, null, 'SQL nao informado', false);    
-        endif;
-    }//SELECT
     
     public function setLinhasAfetadas($numlinhas){
         $this->linhasafetadas = $numlinhas;
@@ -107,7 +90,7 @@ abstract class baseDAO{
         if($geraexcept == false):
             echo $result;
         else:
-            throw new Exception($result);
+            die($result);
         endif;
     }//trataerro
 }//baseDAO
